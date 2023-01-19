@@ -30,6 +30,7 @@ exports.createPost = (req, res, next) => {
     })
     .catch((err) => {
       res.status(500).json({ error: err });
+      next(err);
     });
 };
 
@@ -50,23 +51,31 @@ exports.getAllPosts = (req, res, next) => {
       });
       res.status(200).json({ posts });
     })
-    .catch((err) => res.status(500).json({ error: err }));
+    .catch((err) => {
+      res.status(500).json({ error: err });
+      next(err);
+    });
 };
 
 exports.getPostById = (req, res, next) => {
   const postId = req.params.post_id;
-  Post.findById(postId).then((result) => {
-    const { title, description, likes, comments } = result;
-    const numberOfLikes = likes.size;
-    const numberOfComments = comments.length;
-    const post = {
-      title,
-      description,
-      numberOfLikes,
-      numberOfComments,
-    };
-    res.status(200).json({ post });
-  });
+  Post.findById(postId)
+    .then((result) => {
+      const { title, description, likes, comments } = result;
+      const numberOfLikes = likes.size;
+      const numberOfComments = comments.length;
+      const post = {
+        title,
+        description,
+        numberOfLikes,
+        numberOfComments,
+      };
+      res.status(200).json({ post });
+    })
+    .catch((err) => {
+      res.status(404).json({ error: err });
+      next(err);
+    });
 };
 
 exports.deletePostById = (req, res, next) => {
@@ -74,9 +83,8 @@ exports.deletePostById = (req, res, next) => {
 
   Post.findById(postId)
     .then((post) => {
-      console.log(post);
       if (post === null) {
-        const error = new Error("Could bot find the Post");
+        const error = new Error("Could not find the Post");
         error.statusCode = 404;
         throw error;
       }
@@ -84,12 +92,13 @@ exports.deletePostById = (req, res, next) => {
       Post.findByIdAndDelete(postId);
     })
     .then((result) => {
-      res.status(200).json({ message: "Post deleted", posts: result });
+      res.status(200).json({ message: "Post deleted" });
     })
     .catch((err) => {
       if (!err.statusCode) {
         err.statusCode = 500;
       }
       res.status(500).json({ error: err });
+      next(err);
     });
 };

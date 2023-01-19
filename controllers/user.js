@@ -9,5 +9,8 @@ exports.getUser = (req, res, next) => {
       const numberOfFollowing = following.size;
       res.status(200).json({ name, numberOfFollowers, numberOfFollowing });
     })
-    .catch((err) => res.status(500).json({ error: err }));
+    .catch((err) => {
+      res.status(500).json({ error: err });
+      next(err);
+    });
 };

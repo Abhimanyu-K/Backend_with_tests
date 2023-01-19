@@ -1,10 +1,26 @@
 const express = require("express");
-const loginHandler = require("../controllers/auth");
+const { body } = require("express-validator");
+const authHandler = require("../controllers/auth");
 
 const router = express.Router();
 
-router.post("/", loginHandler.login);
+router.post(
+  "/",
+  [
+    body("email").trim().isLength({ min: 3 }),
+    body("password").trim().isLength({ min: 3 }),
+  ],
+  authHandler.login
+);
 
-router.post("/signup", loginHandler.signup);
+router.post(
+  "/signup",
+  [
+    body("name").trim().isLength({ min: 2 }),
+    body("email").trim().isLength({ min: 3 }),
+    body("password").trim().isLength({ min: 3 }),
+  ],
+  authHandler.signup
+);
 
 module.exports = router;

@@ -12,5 +12,8 @@ exports.follow = (req, res, next) => {
       user.save();
       res.status(201).json({ message: "User Followed" });
     })
-    .catch((err) => res.status(500).json({ err }));
+    .catch((err) => {
+      res.status(500).json({ err });
+      next(err);
+    });
 };

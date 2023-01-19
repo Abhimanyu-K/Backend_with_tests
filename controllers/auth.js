@@ -77,5 +77,6 @@ exports.signup = (req, res, next) => {
     .catch((err) => {
       console.log(err);
       res.json({ err });
+      next(err);
     });
 };

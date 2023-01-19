@@ -11,5 +11,8 @@ exports.postComment = (req, res, next) => {
       const commentId = post.comments[parseInt(commentIndex) - 1]._id;
       res.status(201).json({ message: "Commented Successfully", commentId });
     })
-    .catch((err) => res.status(404).json({ error: "Not Commented" }));
+    .catch((err) => {
+      res.status(404).json({ error: "Not Commented" });
+      next(err);
+    });
 };

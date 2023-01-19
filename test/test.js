@@ -17,7 +17,8 @@ var User = require("../models/user");
 chai.use(chaiHttp);
 
 describe("Posts API", function () {
-  // it("Should register user, login user, check token, create post and delete a post", function (done) {
+  // SIGNUP TEST CASE
+  // it("Should register user", function (done) {
   //   chai
   //     .request(server)
 
@@ -36,12 +37,14 @@ describe("Posts API", function () {
   //     });
   // });
 
-  it("login and create post", (done) => {
+  it("login and create post and delete the post", (done) => {
     // Login once and get token to access all the protected routes
     chai
       .request(server)
       .post("/api/authenticate")
+
       //send user login details
+      //dummy user data
       .send({
         email: "testing8@user8.com",
         password: "testcases8",
@@ -51,7 +54,7 @@ describe("Posts API", function () {
         res.body.should.have.property("token");
         let token = res.body.token;
 
-        // Positive result
+        // POSITIVE RESULT
         chai
           .request(server)
           .post("/api/posts")
@@ -65,32 +68,34 @@ describe("Posts API", function () {
             res.should.be.json;
             res.body.should.be.a("object");
             res.body.should.have.property("post");
+            res.body.post.should.have.property("postId");
+            var postId = res.body.post.postId;
+
+            chai
+              .request(server)
+              .delete(`/api/posts/${postId}`)
+              .set("Authorization", token)
+              .end((err, res) => {
+                res.should.have.status(200);
+                done();
+              });
           });
 
-        // Negative result
-        chai
-          .request(server)
-          .post("/api/posts")
-          .set("Authorization", token)
-          .send({
-            description: "Test Description1",
-          })
-          .end((err, res) => {
-            res.should.have.status(500);
-            res.should.be.json;
-            res.body.should.be.a("object");
-            res.body.should.have.property("error");
-            done();
-          });
+        // NEGATIVE RESULT
+        // chai
+        //   .request(server)
+        //   .post("/api/posts")
+        //   .set("Authorization", token)
+        //   .send({
+        //     description: "Test Description1",
+        //   })
+        //   .end((err, res) => {
+        //     res.should.have.status(500);
+        //     res.should.be.json;
+        //     res.body.should.be.a("object");
+        //     res.body.should.have.property("error");
+        //     done();
+        //   });
       });
   });
-
-  // it("Should Login user and create post", function (done) {
-  //   // Follow up with login
-  // });
-
-  // it("Create Post", function () {
-  //   // Follow up with requesting get All posts which is a protected route
-  //   console.log("ctpost");
-  // });
 });

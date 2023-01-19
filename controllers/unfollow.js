@@ -19,5 +19,8 @@ exports.unfollow = (req, res, next) => {
         res.status(201).json({ message: "User Unfollowed" });
       }
     })
-    .catch((err) => res.status(404).json({ error: err }));
+    .catch((err) => {
+      res.status(404).json({ error: err });
+      next(err);
+    });
 };

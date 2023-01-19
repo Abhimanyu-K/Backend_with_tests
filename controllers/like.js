@@ -16,5 +16,6 @@ exports.like = (req, res, next) => {
     })
     .catch((err) => {
       res.status(404).json({ error: "Post Not found" });
+      next(err);
     });
 };

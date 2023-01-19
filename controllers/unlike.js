@@ -17,5 +17,6 @@ exports.unlike = (req, res, next) => {
     })
     .catch((err) => {
       res.status(404).json({ error: err });
+      next(err);
     });
 };
