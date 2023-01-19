@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 
 const PORT = process.env.PORT;
 
+const LOC_HOME = "/";
 const LOC_API = "/api";
 const LOC_AUTH = LOC_API + "/authenticate";
 const LOC_FOLLOW = LOC_API + "/follow";
@@ -27,6 +28,7 @@ const LOC_COMMENT = LOC_API + "/comment";
 const LOC_ALL_POSTS = LOC_API + "/all_posts";
 
 function set_Routes() {
+  const router_home = require("./routes/home");
   const router_auth = require("./routes/auth");
   const router_allposts = require("./routes/allposts");
   const router_comment = require("./routes/comment");
@@ -39,6 +41,7 @@ function set_Routes() {
   app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+  app.use(LOC_HOME, router_home);
   app.use(LOC_AUTH, router_auth);
   app.use(LOC_ALL_POSTS, router_allposts);
   app.use(LOC_POSTS, router_posts);
